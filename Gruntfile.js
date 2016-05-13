@@ -84,6 +84,12 @@ module.exports  = function(grunt) {
         },
 
         gitadd: {
+            bin:{
+                options: {
+                    all: true,
+                    cwd: "../../bin" 
+                }
+            },
             misc:{
                 options: {
                     all: true,
@@ -116,6 +122,12 @@ module.exports  = function(grunt) {
             },
         },
         gitcommit: {
+            bin: {
+                options: {
+                    cwd: "../../bin",
+                    message: "关机自动提交" 
+                },
+            },
             misc: {
                 options: {
                     cwd: "../misc",
@@ -151,7 +163,14 @@ module.exports  = function(grunt) {
                 },
             } 
         },
-        gitpush: {
+        gitpush:{
+           bin: {
+                options: {
+                    remote: "origin",
+                    branch: "master",
+                    cwd: "../../bin" 
+                }
+            },
             misc: {
                 options: {
                     remote: "origin",
@@ -303,6 +322,10 @@ module.exports  = function(grunt) {
                                 'gitadd:anzizhaoBackend',
                                 'gitcommit:anzizhaoBackend',
                                 'gitpush:anzizhaoBackend',
+
+                                'gitadd:bin',
+                                'gitcommit:bin',
+                                'gitpush:bin',
 
                                 //在不同的窗口开启的 
                             ];
