@@ -1,6 +1,7 @@
 module.exports  = function(grunt) {
     var nowTime = new Date(); 
     var mainPageCommitMessage = "autoCommit" + nowTime.getTime(); 
+    var commonCommitMess = "autoCommit" + nowTime.getTime(); 
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
         uglify: {
@@ -83,13 +84,31 @@ module.exports  = function(grunt) {
         },
 
         gitadd: {
-            mainPage:{
+            misc:{
                 options: {
                     all: true,
-                    cwd: "../anzizhao.github.io" 
+                    cwd: "../misc" 
                 }
             },
-            profile:{
+            myprofile:{
+                options: {
+                    all: true,
+                    cwd: "../myprofile" 
+                }
+            },
+            anzizhaoBackend:{
+                options: {
+                    all: true,
+                    cwd: "../anzizhaoBackend" 
+                }
+            },
+            myprofile:{
+                options: {
+                    all: true,
+                    cwd: "../myprofile" 
+                }
+            },
+            manager:{
                 options: {
                     all: true,
                     cwd: "." 
@@ -97,19 +116,32 @@ module.exports  = function(grunt) {
             },
         },
         gitcommit: {
-            mainPage: {
+            misc: {
                 options: {
-                    cwd: "../anzizhao.github.io",
-                    message: mainPageCommitMessage 
+                    cwd: "../misc",
+                    message: "关机自动提交" 
                 },
             },
-            profile: {
+            anzizhaoBackend: {
+                options: {
+                    cwd: "../anzizhaoBackend",
+                    message: "关机自动提交" 
+                },
+            },
+            manager: {
                 options: {
                     cwd: ".",
-                    message: "上线自动化步骤" 
+                    message: "关机自动提交" 
+                },
+            },
+            myprofile: {
+                options: {
+                    cwd: "../myprofile",
+                    message: "关机自动提交" 
                 },
             },
         },
+
         gitcheckout:{
             current:{
                 options:{
@@ -120,11 +152,32 @@ module.exports  = function(grunt) {
             } 
         },
         gitpush: {
+            misc: {
+                options: {
+                    remote: "origin",
+                    branch: "master",
+                    cwd: "../misc" 
+                }
+            },
+            anzizhaoBackend: {
+                options: {
+                    remote: "origin",
+                    branch: "master",
+                    cwd: "../anzizhaoBackend" 
+                }
+            },
             myprofile: {
                 options: {
                     remote: "osc",
                     branch: "static_i",
-                    cwd: "~/Workspace/myprofile" 
+                    cwd: "../myprofile" 
+                }
+            },
+            manager: {
+                options: {
+                    remote: "origin",
+                    branch: "master",
+                    cwd: "." 
                 }
             },
         },
@@ -213,6 +266,44 @@ module.exports  = function(grunt) {
                                 'gitmerge:myprofile',
                                 'gitfetch:backend',
                                 'gitmerge:backend',
+                                //在不同的窗口开启的 
+                            ];
+                            if ( list ) {
+                                cmds.forEach(function(item, index ){
+                                    console.log( (index+1) +'. ' + item ) 
+                                })
+                                return 
+                            }
+                            var runCmds = cmds.filter(function(item, index){
+                                return  (index+1) >= start  
+                            })
+                            grunt.task.run( runCmds )
+                        }
+                      );
+
+    // 公司关机执行程序 开发环境
+    grunt.registerTask('shutdown', "grunt shutdown --start=   --list",
+                        function(){
+                            var start = grunt.option("start") || 1;
+                            var list = grunt.option("list");
+                            var cmds = [   
+                                // 更新前后端项目代码
+                                'gitadd:misc',
+                                'gitcommit:misc',
+                                'gitpush:misc',
+
+                                'gitadd:manager',
+                                'gitcommit:manager',
+                                'gitpush:manager',
+
+                                'gitadd:myprofile',
+                                'gitcommit:myprofile',
+                                'gitpush:myprofile',
+
+                                'gitadd:anzizhaoBackend',
+                                'gitcommit:anzizhaoBackend',
+                                'gitpush:anzizhaoBackend',
+
                                 //在不同的窗口开启的 
                             ];
                             if ( list ) {
