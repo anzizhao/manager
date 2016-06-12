@@ -207,6 +207,12 @@ module.exports  = function(grunt) {
                     cwd: "../myprofile" 
                 }
             },
+            manager: {
+                options: {
+                    repository: 'origin',
+                    cwd: "../../bin" 
+                }
+            },
             backend: {
                 options: {
                     repository: 'origin',
@@ -215,6 +221,12 @@ module.exports  = function(grunt) {
             },
         },
         gitmerge: {
+            manager: {
+                options: {
+                    branch: 'origin/master',
+                    cwd: "../../bin" 
+                }
+            },
             myprofile: {
                 options: {
                     branch: 'osc/static_i',
@@ -326,7 +338,6 @@ module.exports  = function(grunt) {
                                 'gitadd:bin',
                                 'gitcommit:bin',
                                 'gitpush:bin',
-
                                 //在不同的窗口开启的 
                             ];
                             if ( list ) {
@@ -432,6 +443,27 @@ module.exports  = function(grunt) {
                       );
 
 
+    //启动电脑,自动获取更新项目
+    grunt.registerTask("updateProject", "grunt updateProject",
+                        function () {
+                            var start = grunt.option("start") || 1;
+                            var list = grunt.option("list");
+                            var cmds = [   
+                                'gitfetch:manager',
+                                'gitmerge:manager',
+                            ];
+                            if ( list ) {
+                                cmds.forEach(function(item, index ){
+                                    console.log( (index+1) +'. ' + item ) 
+                                })
+                                return 
+                            }
+                            var runCmds = cmds.filter(function(item, index){
+                                return  (index+1) >= start  
+                            })
+                            grunt.task.run( runCmds )
+                        }
+                      );
 
 };
 
